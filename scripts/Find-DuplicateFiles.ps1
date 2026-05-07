@@ -1,58 +1,121 @@
-function Find-DuplicateFiles {
-    param(
-        [Parameter(Mandatory=$true)]
-        [string]$Path,
+<#
+.SYNOPSIS
+Find duplicate files by Name, Size, or Hash.
 
-        [ValidateSet("Name","Hash")]
-        [string]$Mode = "Name",
+.EXAMPLE
+.\Find-DuplicateFiles.ps1 -Path "G:\lab" -Mode Hash -ExportCsv ".\reports\duplicates.csv"
+#>
 
-        [ValidateSet("Newest","Oldest")]
-        [string]$Keep = "Newest",
+[CmdletBinding()]
+param(
+    [Parameter(Mandatory = $true)]
+    [ValidateScript({
+        if (Test-Path $_ -PathType Container) { $true }
+        else { throw "Path does not exist or is not a folder: $_" }
+    })]
+    [string]$Path,
 
-        [switch]$WhatIf
-    )
+    [ValidateSet("Name", "Size", "Hash")]
+    [string]$Mode = "Hash",
 
-    Write-Output "Scanning path: $Path"
-    Write-Output "Mode: $Mode | Keep: $Keep"
+    [string]$ExportCsv = ".\duplicates-report.csv",
 
-    if ($Mode -eq "Name") {
-        $items = Get-ChildItem -Path $Path -File -Recurse
-        $groups = $items | Group-Object Name
+    [string]$LogPath = ".\logs\Find-DuplicateFiles.log"
+)
+
+$ErrorActionPreference = "Stop"
+
+try {
+    $logFolder = Split-Path $LogPath -Parent
+    if ($logFolder -and -not (Test-Path $logFolder)) {
+        New-Item -Path $logFolder -ItemType Directory -Force | Out-Null
     }
-    else {
-        $items = Get-ChildItem -Path $Path -File -Recurse | Get-FileHash
-        $groups = $items | Group-Object Hash
+
+    Start-Transcript -Path $LogPath -Append
+
+    Write-Host "Scanning path: $Path"
+    Write-Host "Mode: $Mode"
+
+    $files = Get-ChildItem -Path $Path -File -Recurse
+
+    if (-not $files) {
+        Write-Warning "No files found."
+        return
+    }
+
+    switch ($Mode) {
+        "Name" {
+            $groups = $files | Group-Object Name
+        }
+
+        "Size" {
+            $groups = $files | Group-Object Length
+        }
+
+        "Hash" {
+            $hashList = foreach ($file in $files) {
+                $index++
+                Write-Progress `
+                    -Activity "Calculating file hashes" `
+                    -Status $file.FullName `
+                    -PercentComplete (($index / $files.Count) * 100)
+
+                Get-FileHash -Path $file.FullName
+            }
+
+            Write-Progress -Activity "Calculating file hashes" -Completed
+
+            $groups = $hashList | Group-Object Hash
+        }
     }
 
     $duplicates = $groups | Where-Object { $_.Count -gt 1 }
 
-    $toDelete = foreach ($group in $duplicates) {
+    $result = foreach ($group in $duplicates) {
+        foreach ($item in $group.Group) {
+            if ($Mode -eq "Hash") {
+                $fileItem = Get-Item $item.Path
 
-        if ($Mode -eq "Hash") {
-            $files = $group.Group | Get-Item
-        } else {
-            $files = $group.Group
-        }
-
-        if ($Keep -eq "Newest") {
-            $files | Sort-Object LastWriteTime -Descending | Select-Object -Skip 1
-        }
-        else {
-            $files | Sort-Object LastWriteTime | Select-Object -Skip 1
+                [PSCustomObject]@{
+                    GroupKey      = $group.Name
+                    FullName      = $fileItem.FullName
+                    LengthMB      = [math]::Round($fileItem.Length / 1MB, 2)
+                    LastWriteTime = $fileItem.LastWriteTime
+                    Mode          = $Mode
+                }
+            }
+            else {
+                [PSCustomObject]@{
+                    GroupKey      = $group.Name
+                    FullName      = $item.FullName
+                    LengthMB      = [math]::Round($item.Length / 1MB, 2)
+                    LastWriteTime = $item.LastWriteTime
+                    Mode          = $Mode
+                }
+            }
         }
     }
 
-    # export raport
-    $toDelete | Select-Object FullName, Length, LastWriteTime |
-    Export-Csv "duplicates_to_delete.csv" -NoTypeInformation
+    if ($result) {
+        $csvFolder = Split-Path $ExportCsv -Parent
+        if ($csvFolder -and -not (Test-Path $csvFolder)) {
+            New-Item -Path $csvFolder -ItemType Directory -Force | Out-Null
+        }
 
-    Write-Output "Found $($toDelete.Count) files to delete"
+        $result |
+            Sort-Object GroupKey, FullName |
+            Export-Csv -Path $ExportCsv -NoTypeInformation
 
-    # ștergere (sau simulare)
-    if ($WhatIf) {
-        $toDelete | Remove-Item -WhatIf
+        Write-Host "Duplicate files found: $($result.Count)"
+        Write-Host "Report exported to: $ExportCsv"
     }
     else {
-        $toDelete | Remove-Item
+        Write-Host "No duplicate files found."
     }
+}
+catch {
+    Write-Error "Script failed: $($_.Exception.Message)"
+}
+finally {
+    Stop-Transcript | Out-Null
 }
