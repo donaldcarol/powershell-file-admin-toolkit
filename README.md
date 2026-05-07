@@ -8,9 +8,9 @@ A collection of practical PowerShell scripts for file management and system admi
 ## 📂 Project Structure
 
 scripts/
-Find-DuplicateFiles.ps1
-Remove-OldLogFiles.ps1
-Rename-FilesByPattern.ps1
+- Find-DuplicateFiles.ps1  
+- Remove-OldLogFiles.ps1  
+- Rename-FilesByPattern.ps1
 
 
 ## 🚀 Features
