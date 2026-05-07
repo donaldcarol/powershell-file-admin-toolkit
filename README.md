@@ -5,42 +5,103 @@
 
 A collection of practical PowerShell scripts for file management and system administration tasks.
 
-## 📂 Project Structure
-
-scripts/
-- Find-DuplicateFiles.ps1  
-- Remove-OldLogFiles.ps1  
-- Rename-FilesByPattern.ps1
-
 
 ## 🚀 Features
 
-- Find duplicate files (by name or hash)
-- Safe removal with `-WhatIf`
-- Log export to CSV
-- Batch file renaming
-- File cleanup automation
+- 🔍 Find duplicate files (by Name, Size, or Hash)
+- 🧹 Safe file cleanup with `-WhatIf` support
+- ✏️ Batch file renaming (regex-based)
+- 🔄 Change file extensions in bulk
+- 📂 Move files based on rules (extension / name pattern)
+- 📊 Export reports to CSV
+- 🪵 Built-in logging with `Start-Transcript`
 
-## 🛠️ Usage
+## 📂 Project Structure
 
-### Find duplicate files
+scripts/
+
+- Find-DuplicateFiles.ps1
+- Rename-FilesByPattern.ps1
+- Change-FileExtension.ps1
+- Move-FilesByRule.ps1
+- logs/
+- reports/
+
+---
+
+## 🛠️ Requirements
+
+- PowerShell 7+
+- Windows / Linux (cross-platform compatible where possible)
+
+---
+
+## 📦 Scripts Overview
+
+### 🔍 Find-DuplicateFiles.ps1
+
+Find duplicate files using multiple strategies:
+- `Name` → same filename
+- `Size` → same file size
+- `Hash` → identical content (recommended)
+
+#### Example
 
 ```powershell
-.\Find-DuplicateFiles.ps1 -Path "G:\lab" -Mode Hash -WhatIf
-
-.\Remove-OldLogFiles.ps1 -Path "C:\Temp" -Days 30 -WhatIf
+.\scripts\Find-DuplicateFiles.ps1 -Path "G:\lab" -Mode Hash
 
 ```
 
+Safe mode (simulation)
+```
+.\scripts\Find-DuplicateFiles.ps1 -Path "G:\lab" -Mode Hash -Delete -WhatIf
+```
 
+✏️ Rename-FilesByPattern.ps1
+
+Replace text in file names using regex.
+
+```
+.\scripts\Rename-FilesByPattern.ps1 -Path "G:\lab" -Find "Watch\s*" -ReplaceWith "" -Recurse -WhatIf
+```
+
+🔄 Change-FileExtension.ps1
+
+Change file extensions in bulk.
+
+```
+.\scripts\Change-FileExtension.ps1 -Path "G:\lab" -OldExtension "log" -NewExtension "txt" -Recurse -WhatIf
+```
+---
 ⚠️ Safety
 
-All scripts support -WhatIf to simulate actions before execution.
+All scripts support safe execution:
+
+-WhatIf → simulate changes  
+-Confirm → interactive confirmation  
+Logging enabled via Start-Transcript  
 
 📊 Example Output
 
-(you can add screenshots here later)
+Scripts can generate CSV reports:
+```
+reports/duplicates-report.csv
+```
+---
+🧠 Design Principles
+- Uses PowerShell advanced functions (CmdletBinding)
+- Supports pipeline and automation scenarios
+- Built with safety-first approach
+- Designed for real-world system administration
 
+---
 👨‍💻 Author
 
-Donald Carol
+Donald Carol   
+Cloud / Infrastructure Engineer
+
+---
+
+📌 Notes
+
+This project is part of a hands-on PowerShell learning and automation practice, focused on real-world scenarios.
