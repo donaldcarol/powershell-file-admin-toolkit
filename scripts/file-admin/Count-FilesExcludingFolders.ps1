@@ -1,37 +1,101 @@
-[CmdletBinding(SupportsShouldProcess = $true)]
+<#
+.SYNOPSIS
+Count files recursively while excluding specific folders.
+
+.DESCRIPTION
+This script counts files under a given root path, while excluding folders
+by name pattern such as "_*", ".git", "node_modules", etc.
+
+It is useful when you want to count real project files while ignoring
+temporary, hidden, generated, or repository-related folders.
+
+.EXAMPLE
+.\Count-FilesExcludingFolders.ps1 -Path "G:\lab"
+
+.EXAMPLE
+.\Count-FilesExcludingFolders.ps1 -Path "G:\lab" -ExcludeFolder "_*", ".git", "node_modules"
+#>
+
+[CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]
+    [ValidateScript({
+        if (Test-Path $_ -PathType Container) { $true }
+        else { throw "Path does not exist or is not a folder: $_" }
+    })]
     [string]$Path,
 
-    [Parameter(Mandatory = $true)]
-    [string]$Destination,
+    [string[]]$ExcludeFolder = @("_*", ".git", "node_modules"),
 
-    [string]$Extension,
+    [switch]$IncludeHidden,
 
-    [string]$NameContains,
-
-    [switch]$Recurse
+    [string]$ExportCsv
 )
 
-if (-not (Test-Path $Destination)) {
-    New-Item -Path $Destination -ItemType Directory -Force | Out-Null
-}
+$ErrorActionPreference = "Stop"
 
-$items = Get-ChildItem -Path $Path -File -Recurse:$Recurse
+try {
+    Write-Host "Scanning path: $Path"
+    Write-Host "Excluded folders: $($ExcludeFolder -join ', ')"
 
-if ($Extension) {
-    $Extension = $Extension.TrimStart(".")
-    $items = $items | Where-Object { $_.Extension -eq ".$Extension" }
-}
-
-if ($NameContains) {
-    $items = $items | Where-Object { $_.Name -like "*$NameContains*" }
-}
-
-foreach ($item in $items) {
-    $targetPath = Join-Path $Destination $item.Name
-
-    if ($PSCmdlet.ShouldProcess($item.FullName, "Move to $targetPath")) {
-        Move-Item -Path $item.FullName -Destination $targetPath
+    $gciParams = @{
+        Path      = $Path
+        Directory = $true
+        Recurse   = $true
     }
+
+    if ($IncludeHidden) {
+        $gciParams.Force = $true
+    }
+
+    # Get all directories except excluded ones
+    $dirs = Get-ChildItem @gciParams | Where-Object {
+        $dir = $_
+
+        -not (
+            $ExcludeFolder | Where-Object {
+                $dir.Name -like $_
+            }
+        )
+    }
+
+    # Include root folder itself
+    $allDirs = @((Get-Item $Path)) + $dirs
+
+    $files = foreach ($dir in $allDirs) {
+        $fileParams = @{
+            Path = $dir.FullName
+            File = $true
+        }
+
+        if ($IncludeHidden) {
+            $fileParams.Force = $true
+        }
+
+        Get-ChildItem @fileParams
+    }
+
+    $result = [PSCustomObject]@{
+        Path            = (Resolve-Path $Path).Path
+        FileCount       = $files.Count
+        ExcludedFolders = ($ExcludeFolder -join ", ")
+        IncludeHidden   = [bool]$IncludeHidden
+        ScanDate        = Get-Date
+    }
+
+    $result
+
+    if ($ExportCsv) {
+        $csvFolder = Split-Path $ExportCsv -Parent
+
+        if ($csvFolder -and -not (Test-Path $csvFolder)) {
+            New-Item -Path $csvFolder -ItemType Directory -Force | Out-Null
+        }
+
+        $result | Export-Csv -Path $ExportCsv -NoTypeInformation
+        Write-Host "Report exported to: $ExportCsv"
+    }
+}
+catch {
+    Write-Error "Script failed: $($_.Exception.Message)"
 }
