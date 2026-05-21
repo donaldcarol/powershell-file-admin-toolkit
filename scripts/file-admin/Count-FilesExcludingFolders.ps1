@@ -49,15 +49,30 @@ try {
     }
 
     # Get all directories except excluded ones
-    $dirs = Get-ChildItem @gciParams | Where-Object {
-        $dir = $_
+   $resolvedExclusions = foreach ($exclude in $ExcludeFolder) {
+    if (Test-Path $exclude -PathType Container) {
+        (Resolve-Path $exclude).Path.TrimEnd('\')
+    }
+    else {
+        $exclude
+    }
+}
 
-        -not (
-            $ExcludeFolder | Where-Object {
+$dirs = Get-ChildItem @gciParams | Where-Object {
+    $dir = $_
+    $dirFullName = $dir.FullName.TrimEnd('\')
+
+    -not (
+        $resolvedExclusions | Where-Object {
+            if ($_ -match '^[a-zA-Z]:\\') {
+                $dirFullName -like "$_*"
+            }
+            else {
                 $dir.Name -like $_
             }
-        )
-    }
+        }
+    )
+}
 
     # Include root folder itself
     $allDirs = @((Get-Item $Path)) + $dirs
