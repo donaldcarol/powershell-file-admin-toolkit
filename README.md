@@ -86,12 +86,22 @@ Replace text in file names using regex.
 ```
 
 🔄 Change-FileExtension.ps1
-
 Change file extensions in bulk.
 
 ```
 .\scripts\Change-FileExtension.ps1 -Path "G:\lab" -OldExtension "log" -NewExtension "txt" -Recurse -WhatIf
 ```
+
+🔄 Count-FilesExcludingFolders.ps1 
+
+Count files recursively with support for folder and extension exclusion rules.
+
+```
+.\Count-FilesExcludingFolders.ps1 `
+-Path "C:\Windows" `
+-ExcludeFolder "temp","Fonts" `
+-ExcludeExtension "bak","ini"
+
 ---
 ⚠️ Safety
 
