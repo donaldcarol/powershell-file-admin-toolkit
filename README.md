@@ -20,24 +20,33 @@ A practical PowerShell toolkit for Windows administration, file operations, and 
 
 ## 📂 Project Structure
 
-scripts/  
-- file-admin/  
-      - Find-DuplicateFiles.ps1  
-      - Rename-FilesByPattern.ps1  
-      - Change-FileExtension.ps1  
-      - Move-FilesByRule.ps1  
-- remote-admin/   
-      - Test-ServerConnectivity.ps1  
-      - Get-RemoteProcessStatus.ps1  
-      - Get-RemoteServiceStatus.ps1  
-      - Restart-RemoteService.ps1  
-      - Get-RemoteDiskSpace.ps1  
-      - Get-RemoteUptime.ps1  
-      - Invoke-RemoteHealthCheck.ps1  
-                    
-- logs/
-- reports/
+```
+powershell-file-admin-toolkit/
+│
+├── README.md
+├── servers/
+│   └── servers.txt
+├── reports/
+├── logs/
+│
+├── scripts/
+│   ├── file-admin/
+│   │   ├── Find-DuplicateFiles.ps1
+│   │   ├── Rename-FilesByPattern.ps1
+│   │   ├── Change-FileExtension.ps1
+│   │   ├── Move-FilesByRule.ps1
+│   │   └── Count-FilesExcludingFolders.ps1
+│   │
+│   └── remote-admin/
+│       ├── Test-ServerConnectivity.ps1
+│       ├── Get-RemoteProcessStatus.ps1
+│       ├── Get-RemoteServiceStatus.ps1
+│       ├── Restart-RemoteService.ps1
+│       ├── Get-RemoteDiskSpace.ps1
+│       ├── Get-RemoteUptime.ps1
+│       └── Invoke-RemoteHealthCheck.ps1
 
+```
 ---
 
 ## 🛠️ Requirements
