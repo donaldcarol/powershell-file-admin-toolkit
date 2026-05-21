@@ -1,86 +1,47 @@
 <#
 .SYNOPSIS
-Check process status on multiple remote servers.
-
-.DESCRIPTION
-Reads server names from a text file and checks if a given process
-is running on each remote computer.
-
-Exports results to CSV.
-
-.EXAMPLE
-.\Get-RemoteProcessStatus.ps1 `
--ServerList .\servers\servers.txt `
--ProcessName "MsMpEng"
+Get uptime information from one or more remote computers.
 #>
 
 [CmdletBinding()]
 param(
-
     [Parameter(Mandatory)]
-    [ValidateScript({
-        if(Test-Path $_){$true}
-        else{throw "Server list file not found"}
-    })]
-    [string]$ServerList,
+    [string[]]$ComputerName,
 
-    [string]$ProcessName="MsMpEng",
-
-    [string]$ExportCsv=".\\reports\\process-report.csv"
-
+    [string]$ExportCsv = ".\reports\uptime-report.csv"
 )
 
-$servers=Get-Content $ServerList
+$results = foreach ($computer in $ComputerName) {
+    try {
+        Write-Host "Checking uptime on $computer..."
 
-$results=foreach($server in $servers){
+        Invoke-Command -ComputerName $computer -ScriptBlock {
+            $os = Get-CimInstance Win32_OperatingSystem
+            $lastBoot = $os.LastBootUpTime
+            $uptime = (Get-Date) - $lastBoot
 
-    try{
-
-        Write-Host "Checking $server..."
-
-        $process=Invoke-Command `
-        -ComputerName $server `
-        -ScriptBlock {
-
-            Get-Process $using:ProcessName `
-            -ErrorAction SilentlyContinue
-
-        }
-
-        [PSCustomObject]@{
-
-            ComputerName=$server
-
-            ProcessName=$ProcessName
-
-            Status=if($process){
-                "Running"
+            [PSCustomObject]@{
+                ComputerName   = $env:COMPUTERNAME
+                LastBootUpTime = $lastBoot
+                UptimeDays     = [math]::Round($uptime.TotalDays, 2)
+                UptimeHours    = [math]::Round($uptime.TotalHours, 2)
+                OSVersion      = $os.Caption
             }
-            else{
-                "Not Running"
-            }
-
-            ScanDate=Get-Date
         }
-
     }
-    catch{
-
+    catch {
         [PSCustomObject]@{
-
-            ComputerName=$server
-
-            ProcessName=$ProcessName
-
-            Status="Connection error"
-
-            ScanDate=Get-Date
+            ComputerName   = $computer
+            LastBootUpTime = $null
+            UptimeDays     = $null
+            UptimeHours    = $null
+            OSVersion      = $null
+            ErrorMessage   = $_.Exception.Message
         }
-
     }
 }
 
-$results |
-Export-Csv $ExportCsv -NoTypeInformation
+$results | Export-Csv -Path $ExportCsv -NoTypeInformation
+Write-Host "Report saved to $ExportCsv"
 
-Write-Host "Report saved to: $ExportCsv"
+$results
