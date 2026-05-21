@@ -56,9 +56,9 @@ powershell-file-admin-toolkit/
 
 ---
 
-## 📦 Scripts Overview
+##  Scripts Overview
 
-## File administration
+## 📦 File administration
 
 ### 🔍 Find-DuplicateFiles.ps1
 
