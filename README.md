@@ -101,7 +101,7 @@ Count files recursively with support for folder and extension exclusion rules.
 -Path "C:\Windows" `
 -ExcludeFolder "temp","Fonts" `
 -ExcludeExtension "bak","ini"
-
+```
 ---
 ⚠️ Safety
 
