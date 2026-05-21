@@ -79,21 +79,31 @@ $dirs = Get-ChildItem @gciParams | Where-Object {
 
  $files = Get-ChildItem -Path $Path -File -Recurse -Force:$IncludeHidden
 
-if ($ExcludeFolder.Count -gt 0) {
-    $files = $files | Where-Object {
-        $file = $_
-        -not (
-            $ExcludeFolder | Where-Object {
-                $exclude = $_.TrimEnd('\')
+$files = Get-ChildItem -Path $Path -File -Recurse -Force:$IncludeHidden
 
-                if ($exclude -match '^[a-zA-Z]:\\') {
-                    $file.FullName -notlike "$exclude\*"
-                }
-                else {
-                    $file.FullName -notmatch "\\$([regex]::Escape($exclude))(\\|$)"
-                }
-            }
-        )
+foreach ($exclude in $ExcludeFolder) {
+
+    # Full path exclusion
+    if ($exclude -match '^[a-zA-Z]:\\') {
+
+        $exclude = $exclude.TrimEnd('\')
+
+        $files = $files | Where-Object {
+            $_.FullName -notlike "$exclude\*"
+        }
+    }
+
+    # Folder name exclusion
+    else {
+
+        $files = $files | Where-Object {
+
+            # Split full path into directory names
+            $pathParts = $_.Directory.FullName.Split('\')
+
+            # Keep file only if no folder matches
+            ($pathParts | Where-Object { $_ -like $exclude }).Count -eq 0
+        }
     }
 }
 
