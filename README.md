@@ -58,6 +58,8 @@ powershell-file-admin-toolkit/
 
 ## 📦 Scripts Overview
 
+## File administration
+
 ### 🔍 Find-DuplicateFiles.ps1
 
 Find duplicate files using multiple strategies:
@@ -103,6 +105,26 @@ Count files recursively with support for folder and extension exclusion rules.
 -ExcludeExtension "bak","ini"
 ```
 ---
+
+## 🌐 Remote Administration
+
+### Check Microsoft Defender process on multiple servers
+
+```powershell
+.\scripts\remote-admin\Get-RemoteProcessStatus.ps1 `
+-ServerList .\servers\servers.txt `
+-ProcessName "MsMpEng"
+```
+Features:
+
+- Reads server names from file
+- Uses PowerShell remoting
+- CSV export
+- Error handling
+- Multi-server support
+
+ ---
+
 ⚠️ Safety
 
 All scripts support safe execution:
