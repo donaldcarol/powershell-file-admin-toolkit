@@ -27,7 +27,7 @@ param(
 
     [string[]]$ExcludeFolder = @(),
 
-    [string[]]$ExcludeExtension = @()
+    [string[]]$ExcludeExtension = @(),
     
     [switch]$IncludeHidden,
 
