@@ -27,6 +27,8 @@ param(
 
     [string[]]$ExcludeFolder = @(),
 
+    [string[]]$ExcludeExtension = @()
+    
     [switch]$IncludeHidden,
 
     [string]$ExportCsv
@@ -77,7 +79,6 @@ $dirs = Get-ChildItem @gciParams | Where-Object {
     # Include root folder itself
     $allDirs = @((Get-Item $Path)) + $dirs
 
- $files = Get-ChildItem -Path $Path -File -Recurse -Force:$IncludeHidden
 
 $files = Get-ChildItem -Path $Path -File -Recurse -Force:$IncludeHidden
 
@@ -107,10 +108,22 @@ foreach ($exclude in $ExcludeFolder) {
     }
 }
 
+# Exclude file extensions if specified
+foreach ($extension in $ExcludeExtension) {
+
+    # Remove leading dot if user typed .txt
+    $extension = $extension.TrimStart('.')
+
+    $files = $files | Where-Object {
+        $_.Extension -ne ".$extension"
+    }
+}
+
     $result = [PSCustomObject]@{
         Path            = (Resolve-Path $Path).Path
         FileCount       = $files.Count
         ExcludedFolders = ($ExcludeFolder -join ", ")
+        ExcludedExtensions = ($ExcludeExtension -join ", ")
         IncludeHidden   = [bool]$IncludeHidden
         ScanDate        = Get-Date
     }
