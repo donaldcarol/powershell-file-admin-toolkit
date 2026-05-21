@@ -25,7 +25,7 @@ param(
     })]
     [string]$Path,
 
-    [string[]]$ExcludeFolder = @("_*", ".git", "node_modules"),
+    [string[]]$ExcludeFolder = @(),
 
     [switch]$IncludeHidden,
 
@@ -77,18 +77,25 @@ $dirs = Get-ChildItem @gciParams | Where-Object {
     # Include root folder itself
     $allDirs = @((Get-Item $Path)) + $dirs
 
-    $files = foreach ($dir in $allDirs) {
-        $fileParams = @{
-            Path = $dir.FullName
-            File = $true
-        }
+ $files = Get-ChildItem -Path $Path -File -Recurse -Force:$IncludeHidden
 
-        if ($IncludeHidden) {
-            $fileParams.Force = $true
-        }
+if ($ExcludeFolder.Count -gt 0) {
+    $files = $files | Where-Object {
+        $file = $_
+        -not (
+            $ExcludeFolder | Where-Object {
+                $exclude = $_.TrimEnd('\')
 
-        Get-ChildItem @fileParams
+                if ($exclude -match '^[a-zA-Z]:\\') {
+                    $file.FullName -notlike "$exclude\*"
+                }
+                else {
+                    $file.FullName -notmatch "\\$([regex]::Escape($exclude))(\\|$)"
+                }
+            }
+        )
     }
+}
 
     $result = [PSCustomObject]@{
         Path            = (Resolve-Path $Path).Path
