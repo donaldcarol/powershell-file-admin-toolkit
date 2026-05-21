@@ -103,7 +103,7 @@ foreach ($exclude in $ExcludeFolder) {
             $pathParts = $_.Directory.FullName.Split('\')
 
             # Keep file only if no folder matches
-            ($pathParts | Where-Object { $_ -like $exclude }).Count -eq 0
+            -not ($pathParts -contains $exclude)
         }
     }
 }
