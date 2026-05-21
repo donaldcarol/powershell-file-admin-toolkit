@@ -4,32 +4,58 @@
 
 # PowerShell File & Remote Admin Toolkit
 
-A practical PowerShell toolkit for Windows administration, file operations, and remote server management.
+A collection of practical PowerShell scripts for file management and remote Windows administration.
 
-## Features
+This project focuses on real-world administrative scenarios such as:
 
-- File cleanup and reporting
-- Duplicate file detection
-- Batch rename and extension changes
-- File counting with exclusion rules
-- Remote process checks
-- Remote service checks/restarts
-- Disk space and uptime reports
+- File cleanup and organization
+- Duplicate detection
+- Batch rename operations
+- Remote server administration
+- Service management
+- Disk usage reporting
+- Process monitoring
+- Uptime reporting
 - CSV reporting and logging
-- Safe execution with `-WhatIf`
+
+---
+
+## 🚀 Features
+
+### File Administration
+
+- 🔍 Find duplicate files
+- ✏️ Rename files using regex patterns
+- 🔄 Change file extensions in bulk
+- 📂 Move files based on rules
+- 📊 Count files with exclusion rules
+- 🚫 Exclude folders and extensions
+
+### Remote Administration
+
+- 🌐 Get top CPU-consuming processes
+- ⚙️ Check service status
+- 🔁 Restart remote services
+- 💾 Check disk space usage
+- ⏱️ Get server uptime
+- 📄 Export results to CSV
+
+---
 
 ## 📂 Project Structure
 
-```
+```text
 powershell-file-admin-toolkit/
 │
 ├── README.md
 ├── servers/
 │   └── servers.txt
+│
 ├── reports/
 ├── logs/
 │
 ├── scripts/
+│   │
 │   ├── file-admin/
 │   │   ├── Find-DuplicateFiles.ps1
 │   │   ├── Rename-FilesByPattern.ps1
@@ -38,122 +64,89 @@ powershell-file-admin-toolkit/
 │   │   └── Count-FilesExcludingFolders.ps1
 │   │
 │   └── remote-admin/
-│       ├── Test-ServerConnectivity.ps1
-│       ├── Get-RemoteProcessStatus.ps1
+│       ├── Get-RemoteTopCPU.ps1
 │       ├── Get-RemoteServiceStatus.ps1
+|       ├── Get-RemoteProcessStatus.ps1
 │       ├── Restart-RemoteService.ps1
 │       ├── Get-RemoteDiskSpace.ps1
-│       ├── Get-RemoteUptime.ps1
-│       └── Invoke-RemoteHealthCheck.ps1
-
+│       └── Get-RemoteUptime.ps1
 ```
----
-
-## 🛠️ Requirements
-
-- PowerShell 7+
-- Windows / Linux (cross-platform compatible where possible)
 
 ---
 
-##  Scripts Overview
+## 🖥️ Examples
 
-## 📦 File administration
-
-### 🔍 Find-DuplicateFiles.ps1
-
-Find duplicate files using multiple strategies:
-- `Name` → same filename
-- `Size` → same file size
-- `Hash` → identical content (recommended)
-
-#### Example
+### Find duplicate files
 
 ```powershell
-.\scripts\Find-DuplicateFiles.ps1 -Path "G:\lab" -Mode Hash
-
+.\scripts\file-admin\Find-DuplicateFiles.ps1 `
+-Path "G:\lab" `
+-Mode Hash
 ```
 
-Safe mode (simulation)
-```
-.\scripts\Find-DuplicateFiles.ps1 -Path "G:\lab" -Mode Hash -Delete -WhatIf
-```
+### Count files while excluding folders and extensions
 
-✏️ Rename-FilesByPattern.ps1
-
-Replace text in file names using regex.
-
-```
-.\scripts\Rename-FilesByPattern.ps1 -Path "G:\lab" -Find "Watch\s*" -ReplaceWith "" -Recurse -WhatIf
-```
-
-🔄 Change-FileExtension.ps1
-Change file extensions in bulk.
-
-```
-.\scripts\Change-FileExtension.ps1 -Path "G:\lab" -OldExtension "log" -NewExtension "txt" -Recurse -WhatIf
-```
-
-🔄 Count-FilesExcludingFolders.ps1 
-
-Count files recursively with support for folder and extension exclusion rules.
-
-```
-.\Count-FilesExcludingFolders.ps1 `
+```powershell
+.\scripts\file-admin\Count-FilesExcludingFolders.ps1 `
 -Path "C:\Windows" `
--ExcludeFolder "temp","Fonts" `
--ExcludeExtension "bak","ini"
+-ExcludeFolder "temp","Security" `
+-ExcludeExtension "txt","nfo"
 ```
----
 
-## 🌐 Remote Administration
-
-### Check Microsoft Defender process on multiple servers
+### Check disk space remotely
 
 ```powershell
-.\scripts\remote-admin\Get-RemoteProcessStatus.ps1 `
--ServerList .\servers\servers.txt `
--ProcessName "MsMpEng"
+.\scripts\remote-admin\Get-RemoteDiskSpace.ps1 `
+-ComputerName server1,server2 `
+-DriveLetter C
 ```
-Features:
 
-- Reads server names from file
-- Uses PowerShell remoting
-- CSV export
+### Restart service remotely
+
+```powershell
+.\scripts\remote-admin\Restart-RemoteService.ps1 `
+-ComputerName server1,server2 `
+-ServiceName Spooler `
+-WhatIf
+```
+
+---
+
+## ⚠️ Safety
+
+Many scripts support:
+
+- `-WhatIf`
+- `-Confirm`
 - Error handling
-- Multi-server support
-
- ---
-
-⚠️ Safety
-
-All scripts support safe execution:
-
--WhatIf → simulate changes  
--Confirm → interactive confirmation  
-Logging enabled via Start-Transcript  
-
-📊 Example Output
-
-Scripts can generate CSV reports:
-```
-reports/duplicates-report.csv
-```
----
-🧠 Design Principles
-- Uses PowerShell advanced functions (CmdletBinding)
-- Supports pipeline and automation scenarios
-- Built with safety-first approach
-- Designed for real-world system administration
+- CSV export
+- Logging
 
 ---
-👨‍💻 Author
 
-Donald Carol   
+## 🧠 Design Principles
+
+- Advanced PowerShell functions
+- Remote administration support
+- Safe execution model
+- Reusable automation patterns
+- Real-world administration scenarios
+
+---
+
+## 👨‍💻 Author
+
+Donald Carol
+
 Cloud / Infrastructure Engineer
 
 ---
 
-📌 Notes
+## 📌 Future Improvements
 
-This project is part of a hands-on PowerShell learning and automation practice, focused on real-world scenarios.
+- Parallel execution (`ForEach-Object -Parallel`)
+- Retry logic
+- Progress bars
+- Logging enhancements
+- HTML reports
+- Email notifications
