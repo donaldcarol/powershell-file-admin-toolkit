@@ -1,86 +1,86 @@
 <#
 .SYNOPSIS
-Check process status on multiple remote servers.
+Get disk usage information from remote computers.
 
 .DESCRIPTION
-Reads server names from a text file and checks if a given process
-is running on each remote computer.
-
-Exports results to CSV.
+Connects to one or more remote computers and retrieves
+disk information for a specified drive letter.
 
 .EXAMPLE
-.\Get-RemoteProcessStatus.ps1 `
--ServerList .\servers\servers.txt `
--ProcessName "MsMpEng"
+.\Get-RemoteDiskSpace.ps1 `
+-ComputerName server1,server2 `
+-DriveLetter C
+
 #>
 
 [CmdletBinding()]
 param(
 
     [Parameter(Mandatory)]
-    [ValidateScript({
-        if(Test-Path $_){$true}
-        else{throw "Server list file not found"}
-    })]
-    [string]$ServerList,
+    [string[]]$ComputerName,
 
-    [string]$ProcessName="MsMpEng",
+    [Parameter(Mandatory)]
+    [string]$DriveLetter,
 
-    [string]$ExportCsv=".\\reports\\process-report.csv"
+    [string]$ExportCsv = ".\reports\disk-report.csv"
 
 )
 
-$servers=Get-Content $ServerList
+$results = foreach ($computer in $ComputerName) {
 
-$results=foreach($server in $servers){
+    try {
 
-    try{
+        Write-Host "Checking $computer..."
 
-        Write-Host "Checking $server..."
-
-        $process=Invoke-Command `
-        -ComputerName $server `
+        Invoke-Command `
+        -ComputerName $computer `
         -ScriptBlock {
 
-            Get-Process $using:ProcessName `
-            -ErrorAction SilentlyContinue
+            Get-CimInstance Win32_LogicalDisk |
+            Where-Object {
+                $_.DeviceID -eq "$using:DriveLetter:"
+            } |
+            Select-Object `
+            @{Name="ComputerName";Expression={$env:COMPUTERNAME}},
+            DeviceID,
 
-        }
+            @{Name="SizeGB";Expression={
+                [math]::Round($_.Size/1GB,2)
+            }},
 
-        [PSCustomObject]@{
+            @{Name="FreeGB";Expression={
+                [math]::Round($_.FreeSpace/1GB,2)
+            }},
 
-            ComputerName=$server
+            @{Name="FreePercent";Expression={
+                [math]::Round(
+                    ($_.FreeSpace/$_.Size)*100
+                ,2)
+            }}
 
-            ProcessName=$ProcessName
-
-            Status=if($process){
-                "Running"
-            }
-            else{
-                "Not Running"
-            }
-
-            ScanDate=Get-Date
         }
 
     }
-    catch{
+    catch {
 
         [PSCustomObject]@{
 
-            ComputerName=$server
+            ComputerName=$computer
+            DeviceID="N/A"
+            SizeGB="N/A"
+            FreeGB="N/A"
+            FreePercent="N/A"
+            Error=$_.Exception.Message
 
-            ProcessName=$ProcessName
-
-            Status="Connection error"
-
-            ScanDate=Get-Date
         }
 
     }
+
 }
 
 $results |
 Export-Csv $ExportCsv -NoTypeInformation
 
-Write-Host "Report saved to: $ExportCsv"
+Write-Host "Report saved to $ExportCsv"
+
+$results
