@@ -2,29 +2,39 @@
 ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
 ![Status](https://img.shields.io/badge/status-active-success)
 
-# PowerShell File Admin Toolkit
+# PowerShell File & Remote Admin Toolkit
 
-A collection of practical PowerShell scripts for file management and system administration tasks.
+A practical PowerShell toolkit for Windows administration, file operations, and remote server management.
 
+## Features
 
-## 🚀 Features
-
-- 🔍 Find duplicate files (by Name, Size, or Hash)
-- 🧹 Safe file cleanup with `-WhatIf` support
-- ✏️ Batch file renaming (regex-based)
-- 🔄 Change file extensions in bulk
-- 📂 Move files based on rules (extension / name pattern)
-- 📊 Export reports to CSV
-- 🪵 Built-in logging with `Start-Transcript`
+- File cleanup and reporting
+- Duplicate file detection
+- Batch rename and extension changes
+- File counting with exclusion rules
+- Remote process checks
+- Remote service checks/restarts
+- Disk space and uptime reports
+- CSV reporting and logging
+- Safe execution with `-WhatIf`
 
 ## 📂 Project Structure
 
-scripts/
-
-- Find-DuplicateFiles.ps1
-- Rename-FilesByPattern.ps1
-- Change-FileExtension.ps1
-- Move-FilesByRule.ps1
+scripts/  
+- file-admin/  
+      - Find-DuplicateFiles.ps1  
+      - Rename-FilesByPattern.ps1  
+      - Change-FileExtension.ps1  
+      - Move-FilesByRule.ps1  
+- remote-admin/   
+      - Test-ServerConnectivity.ps1  
+      - Get-RemoteProcessStatus.ps1  
+      - Get-RemoteServiceStatus.ps1  
+      - Restart-RemoteService.ps1  
+      - Get-RemoteDiskSpace.ps1  
+      - Get-RemoteUptime.ps1  
+      - Invoke-RemoteHealthCheck.ps1  
+                    
 - logs/
 - reports/
 
