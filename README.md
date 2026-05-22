@@ -26,6 +26,7 @@ This project focuses on real-world administrative scenarios such as:
 
 - 🔍 Find duplicate files
 - 🔍 Find files by criteria
+- 🔍 Find text in files
 - ✏️ Rename files using regex patterns
 - 🔄 Change file extensions in bulk
 - 📂 Move files based on rules
@@ -60,6 +61,7 @@ powershell-file-admin-toolkit/
 │   ├── file-admin/
 │   │   ├── Find-DuplicateFiles.ps1
 |   |   ├── Find-FilesByCriteria.ps1
+|   |   ├── Find-TextInFiles.ps1
 │   │   ├── Rename-FilesByPattern.ps1
 │   │   ├── Change-FileExtension.ps1
 │   │   ├── Move-FilesByRule.ps1
@@ -95,6 +97,15 @@ powershell-file-admin-toolkit/
 -Extension "mkv" `
 -MinSizeMB 500
 
+```
+
+### Search text inside files
+
+```powershell
+.\scripts\file-admin\Find-TextInFiles.ps1 `
+-Path "C:\Logs" `
+-Pattern "error","failed","critical" `
+-Extension "log","txt"
 ```
 
 ### Count files while excluding folders and extensions
