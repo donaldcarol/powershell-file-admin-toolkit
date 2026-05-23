@@ -91,11 +91,12 @@ powershell-file-admin-toolkit/
 ### Find files by criteria
 
 ```
-.\scripts\file-admin\Find-FilesByCriteria.ps1 `
+.\Find-FilesByCriteria.ps1 `
 -Path "M:\films" `
--NameContains "star" `
--Extension "mkv" `
--MinSizeMB 500
+-Extension "mkv","mp4" `
+-MinSizeMB 700 `
+-CreatedAfter "2024-01-01" `
+-CreatedBefore "2024-12-31"
 
 ```
 
