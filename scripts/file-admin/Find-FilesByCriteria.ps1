@@ -129,7 +129,7 @@ Export-Csv `
     Write-Host "Found: $($results.Count) files"
     Write-Host "Report exported to: $ExportCsv"
 
-    $results
+    
 }
 catch {
     Write-Error "Script failed: $($_.Exception.Message)"
