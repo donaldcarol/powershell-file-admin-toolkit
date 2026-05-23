@@ -1,12 +1,13 @@
 <#
 .SYNOPSIS
-Find files based on name patterns, extensions, and minimum size.
+Find files based on name patterns, extensions, size, and creation date range.
 
 .DESCRIPTION
 Searches recursively for files matching one or more criteria:
 - Name contains text
 - File extension
 - Minimum file size
+- Creation date interval
 
 Exports results to CSV.
 
@@ -15,8 +16,9 @@ Exports results to CSV.
 -Path "M:\films" `
 -NameContains "watch" `
 -Extension "mkv","mp4" `
--MinSizeMB 100
-
+-MinSizeMB 100 `
+-CreatedAfter "2024-01-01" `
+-CreatedBefore "2024-12-31"
 #>
 
 [CmdletBinding()]
@@ -24,10 +26,10 @@ param(
 
     [Parameter(Mandatory)]
     [ValidateScript({
-        if(Test-Path $_ -PathType Container){
+        if (Test-Path $_ -PathType Container) {
             $true
         }
-        else{
+        else {
             throw "Folder not found"
         }
     })]
@@ -37,89 +39,97 @@ param(
 
     [string[]]$Extension,
 
-    [int]$MinSizeMB=0,
+    [int]$MinSizeMB = 0,
+
+    [datetime]$CreatedAfter,
+
+    [datetime]$CreatedBefore,
 
     [switch]$IncludeHidden,
 
-    [string]$ExportCsv=".\\reports\\file-search-report.csv"
-
+    [string]$ExportCsv = ".\reports\file-search-report.csv"
 )
 
-Write-Host "Scanning: $Path"
+$ErrorActionPreference = "Stop"
 
-$files=Get-ChildItem `
--Path $Path `
--File `
--Recurse `
--Force:$IncludeHidden
+try {
+    Write-Host "Scanning: $Path"
 
+    $files = Get-ChildItem `
+        -Path $Path `
+        -File `
+        -Recurse `
+        -Force:$IncludeHidden
 
-# Filter by name
-if($NameContains){
-
-    $files=$files |
-    Where-Object{
-        $_.Name -like "*$NameContains*"
+    # Filter by name
+    if ($NameContains) {
+        $files = $files | Where-Object {
+            $_.Name -like "*$NameContains*"
+        }
     }
 
-}
+    # Filter by extension
+    if ($Extension) {
+        $cleanExtensions = $Extension | ForEach-Object {
+            $_.TrimStart(".")
+        }
 
-
-# Filter by extension
-if($Extension){
-
-    $files=$files |
-    Where-Object{
-
-        $_.Extension.TrimStart('.') `
-        -in $Extension
-
+        $files = $files | Where-Object {
+            $_.Extension.TrimStart(".") -in $cleanExtensions
+        }
     }
 
-}
-
-
-# Filter by size
-if($MinSizeMB){
-
-    $files=$files |
-    Where-Object{
-
-        $_.Length -gt ($MinSizeMB*1MB)
-
+    # Filter by minimum size
+    if ($MinSizeMB -gt 0) {
+        $files = $files | Where-Object {
+            $_.Length -gt ($MinSizeMB * 1MB)
+        }
     }
 
+    # Filter by creation date lower bound
+    if ($CreatedAfter) {
+        $files = $files | Where-Object {
+            $_.CreationTime -ge $CreatedAfter
+        }
+    }
+
+    # Filter by creation date upper bound
+    if ($CreatedBefore) {
+        $files = $files | Where-Object {
+            $_.CreationTime -le $CreatedBefore
+        }
+    }
+
+    $results = $files |
+        Sort-Object Length -Descending |
+        Select-Object `
+            Name,
+            Extension,
+            @{
+                Name = "SizeMB"
+                Expression = {
+                    [math]::Round($_.Length / 1MB, 2)
+                }
+            },
+            CreationTime,
+            LastWriteTime,
+            FullName
+
+    $csvFolder = Split-Path $ExportCsv -Parent
+    if ($csvFolder -and -not (Test-Path $csvFolder)) {
+        New-Item -Path $csvFolder -ItemType Directory -Force | Out-Null
+    }
+
+    $results |
+        Export-Csv `
+            -Path $ExportCsv `
+            -NoTypeInformation
+
+    Write-Host "Found: $($results.Count) files"
+    Write-Host "Report exported to: $ExportCsv"
+
+    $results
 }
-
-
-$results=$files |
-Sort-Object Length -Descending |
-Select-Object `
-
-Name,
-
-Extension,
-
-@{
-Name="SizeMB"
-Expression={
-    [math]::Round(
-        $_.Length/1MB
-    ,2)
+catch {
+    Write-Error "Script failed: $($_.Exception.Message)"
 }
-},
-
-LastWriteTime,
-
-FullName
-
-
-$results |
-Export-Csv `
--Path $ExportCsv `
--NoTypeInformation
-
-
-Write-Host "Found: $($results.Count) files"
-
-$results
