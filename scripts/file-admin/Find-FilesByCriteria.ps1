@@ -100,17 +100,20 @@ try {
         }
     }
 
-  $results = $files |
-Sort-Object LastWriteTime -Descending |
+ $results = $files |
+Sort-Object DirectoryName, LastWriteTime |
 Select-Object `
 @{
-    Name="File Name"
-    Expression={$_.Name}
+    Name = "Folder"
+    Expression = { $_.DirectoryName }
 },
-
 @{
-    Name="Modified"
-    Expression={$_.LastWriteTime}
+    Name = "File Name"
+    Expression = { $_.Name }
+},
+@{
+    Name = "Modified"
+    Expression = { $_.LastWriteTime }
 }
 
     $csvFolder = Split-Path $ExportCsv -Parent
