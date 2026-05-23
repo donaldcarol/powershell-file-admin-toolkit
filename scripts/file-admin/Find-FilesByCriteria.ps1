@@ -100,30 +100,31 @@ try {
         }
     }
 
-    $results = $files |
-        Sort-Object Length -Descending |
-        Select-Object `
-            Name,
-            Extension,
-            @{
-                Name = "SizeMB"
-                Expression = {
-                    [math]::Round($_.Length / 1MB, 2)
-                }
-            },
-            CreationTime,
-            LastWriteTime,
-            FullName
+  $results = $files |
+Sort-Object LastWriteTime -Descending |
+Select-Object `
+@{
+    Name="File Name"
+    Expression={$_.Name}
+},
+
+@{
+    Name="Modified"
+    Expression={$_.LastWriteTime}
+}
 
     $csvFolder = Split-Path $ExportCsv -Parent
     if ($csvFolder -and -not (Test-Path $csvFolder)) {
         New-Item -Path $csvFolder -ItemType Directory -Force | Out-Null
     }
 
-    $results |
-        Export-Csv `
-            -Path $ExportCsv `
-            -NoTypeInformation
+  $results |
+Format-Table -AutoSize
+
+$results |
+Export-Csv `
+-Path $ExportCsv `
+-NoTypeInformation
 
     Write-Host "Found: $($results.Count) files"
     Write-Host "Report exported to: $ExportCsv"
