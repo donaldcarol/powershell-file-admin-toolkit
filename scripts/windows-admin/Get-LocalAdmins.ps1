@@ -1,5 +1,6 @@
-param($ComputerName)
+Get-LocalGroupMember Administrators |
 
-Invoke-Command -ComputerName $ComputerName -ScriptBlock {
-    Get-Process | Sort CPU -Descending | Select -First 5
-}
+Select-Object `
+Name,
+ObjectClass,
+PrincipalSource
