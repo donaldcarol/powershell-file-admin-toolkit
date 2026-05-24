@@ -2,7 +2,7 @@
 ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
 ![Status](https://img.shields.io/badge/status-active-success)
 
-# PowerShell File & Remote Admin Toolkit
+# PowerShell  Admin Toolkit
 
 A collection of practical PowerShell scripts for file management and remote Windows administration.
 
