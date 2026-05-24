@@ -1,5 +1,7 @@
-param($ComputerName)
+Get-BitLockerVolume |
 
-Invoke-Command -ComputerName $ComputerName -ScriptBlock {
-    Get-Process | Sort CPU -Descending | Select -First 5
-}
+Select-Object `
+MountPoint,
+VolumeStatus,
+ProtectionStatus,
+EncryptionMethod
