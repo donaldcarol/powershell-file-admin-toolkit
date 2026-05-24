@@ -1,1 +1,17 @@
-Get-Process | Sort-Object CPU -Descending | Select-Object -First 5 Name, CPU
+Get-Process |
+
+Sort-Object WorkingSet -Descending |
+
+Select-Object `
+-First 10 `
+Name,
+Id,
+
+@{
+Name="MemoryGB"
+Expression={
+[math]::Round(
+$_.WorkingSet/1GB
+,2)
+}
+}
