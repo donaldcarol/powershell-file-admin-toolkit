@@ -74,10 +74,16 @@ powershell-admin-toolkit/
 │   │   └── Restart-RemoteService.ps1
 │   │
 │   ├── windows-admin/
-│   │   ├── Get-InstalledSoftware.ps1
-│   │   ├── Get-EventLogErrors.ps1
-│   │   ├── Check-BitLockerStatus.ps1
-│   │   └── Get-LocalAdmins.ps1
+|   |   ├── Get-InstalledSoftware.ps1
+|   |   ├── Get-EventLogErrors.ps1
+|   |   ├── Check-BitLockerStatus.ps1
+|   |   ├── Get-LocalAdmins.ps1
+|   |   ├── Get-SystemInfo.ps1
+|   |   ├── Get-LargeFolders.ps1
+|   |   ├── Get-PendingReboot.ps1
+|   |   ├── Get-TopMemoryProcesses.ps1
+|   |   ├── Clear-TempFiles.ps1
+|   |   └── Get-StartupPrograms.ps1
 │   │
 │   └── ad-admin/
 │       ├── Get-InactiveUsers.ps1
