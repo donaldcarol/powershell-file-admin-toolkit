@@ -47,9 +47,10 @@ This project focuses on real-world administrative scenarios such as:
 ## 📂 Project Structure
 
 ```text
-powershell-file-admin-toolkit/
+powershell-admin-toolkit/
 │
 ├── README.md
+│
 ├── servers/
 │   └── servers.txt
 │
@@ -57,23 +58,33 @@ powershell-file-admin-toolkit/
 ├── logs/
 │
 ├── scripts/
-│   │
+│
 │   ├── file-admin/
 │   │   ├── Find-DuplicateFiles.ps1
-|   |   ├── Find-FilesByCriteria.ps1
-|   |   ├── Find-TextInFiles.ps1
 │   │   ├── Rename-FilesByPattern.ps1
-│   │   ├── Change-FileExtension.ps1
-│   │   ├── Move-FilesByRule.ps1
+│   │   ├── Find-FilesByCriteria.ps1
+│   │   ├── Find-TextInFiles.ps1
 │   │   └── Count-FilesExcludingFolders.ps1
 │   │
-│   └── remote-admin/
-│       ├── Get-RemoteTopCPU.ps1
-│       ├── Get-RemoteServiceStatus.ps1
-|       ├── Get-RemoteProcessStatus.ps1
-│       ├── Restart-RemoteService.ps1
-│       ├── Get-RemoteDiskSpace.ps1
-│       └── Get-RemoteUptime.ps1
+│   ├── remote-admin/
+│   │   ├── Get-RemoteTopCPU.ps1
+│   │   ├── Get-RemoteDiskSpace.ps1
+│   │   ├── Get-RemoteUptime.ps1
+│   │   ├── Get-RemoteServiceStatus.ps1
+│   │   └── Restart-RemoteService.ps1
+│   │
+│   ├── windows-admin/
+│   │   ├── Get-InstalledSoftware.ps1
+│   │   ├── Get-EventLogErrors.ps1
+│   │   ├── Check-BitLockerStatus.ps1
+│   │   └── Get-LocalAdmins.ps1
+│   │
+│   └── ad-admin/
+│       ├── Get-InactiveUsers.ps1
+│       ├── Get-LockedAccounts.ps1
+│       ├── Disable-InactiveUsers.ps1
+│       ├── Export-ADUsers.ps1
+│       └── Get-PasswordExpiry.ps1
 ```
 
 ---
