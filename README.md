@@ -48,9 +48,9 @@ This project focuses on real-world administrative scenarios such as:
 - Get System Information
 - Get Events from Eventlog
 - Get Installed Sofwares on Server
-- Get volumes enrypted
+- Get encrypted volumes
 - Get programs that run on startup
-- Get runing processes 
+- Get running processes 
 
 ---
 
