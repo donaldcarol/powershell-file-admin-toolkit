@@ -42,6 +42,16 @@ This project focuses on real-world administrative scenarios such as:
 - ⏱️ Get server uptime
 - 📄 Export results to CSV
 
+### Windows Server Administration
+
+- Get local administrators
+- Get System Information
+- Get Events from Eventlog
+- Get Installed Sofwares on Server
+- Get volumes enrypted
+- Get programs that run on startup
+- Get runing processes 
+
 ---
 
 ## 📂 Project Structure
