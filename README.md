@@ -1,5 +1,6 @@
 ''![PowerShell](https://img.shields.io/badge/PowerShell-7-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
+![Platform](https://img.shields.io/badge/Windows-Servers-red)
 ![Status](https://img.shields.io/badge/status-active-success)
 
 # PowerShell  Admin Toolkit
