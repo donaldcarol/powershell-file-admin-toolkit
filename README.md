@@ -85,15 +85,15 @@ powershell-admin-toolkit/
 │   │   ├── Rename-FilesByPattern.ps1
 │   │   ├── Find-FilesByCriteria.ps1
 │   │   ├── Find-TextInFiles.ps1
-│   │   └── Count-FilesExcludingFolders.ps1
+│   │   ├── Count-FilesExcludingFolders.ps1
+|   |   └── Remove-EmptyFolders.ps1 
 │   │
 │   ├── remote-admin/
 │   │   ├── Get-RemoteTopCPU.ps1
 │   │   ├── Get-RemoteDiskSpace.ps1
 │   │   ├── Get-RemoteUptime.ps1
 │   │   ├── Get-RemoteServiceStatus.ps1
-│   │   ├── Restart-RemoteService.ps1
-|   |   └── Remove-EmptyFolders.ps1 
+|   │   ├── Restart-RemoteService.ps1
 │   │
 │   ├── windows-admin/
 |   |   ├── Get-InstalledSoftware.ps1
