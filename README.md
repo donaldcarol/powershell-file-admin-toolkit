@@ -79,7 +79,6 @@ powershell-admin-toolkit/
 ├── logs/
 │
 ├── scripts/
-│
 │   ├── file-admin/
 │   │   ├── Find-DuplicateFiles.ps1
 │   │   ├── Rename-FilesByPattern.ps1
