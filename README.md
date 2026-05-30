@@ -34,6 +34,7 @@ This project focuses on real-world administrative scenarios such as:
 - 📂 Move files based on rules
 - 📊 Count files with exclusion rules
 - 🚫 Exclude folders and extensions
+- 📁 Remove Empty folders
 
 ### Remote Administration
 
@@ -153,6 +154,20 @@ powershell-admin-toolkit/
 -Path "C:\Windows" `
 -ExcludeFolder "temp","Security" `
 -ExcludeExtension "txt","nfo"
+```
+
+### Remove empty folders from $env:TEMP
+
+```
+.\scripts\file-admin\Remove-EmptyTempFolders.ps1
+
+Recursively scans the current user's TEMP directory and removes orphaned empty folders left behind by installers, update processes and applications such as OneDrive, Docker Desktop, VS Code and Install4j-based software.
+
+Features:
+- Safe recursive scan
+- Supports -WhatIf
+- Ignores access denied errors
+- Useful for periodic workstation maintenance
 ```
 
 ### Check disk space remotely
