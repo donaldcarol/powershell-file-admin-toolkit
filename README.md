@@ -1,5 +1,7 @@
-![PowerShell](https://img.shields.io/badge/PowerShell-7-blue)
+''![PowerShell](https://img.shields.io/badge/PowerShell-7-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
+![Platform](https://img.shields.io/badge/Windows-Servers-red)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 ![Status](https://img.shields.io/badge/status-active-success)
 
 # PowerShell  Admin Toolkit
@@ -44,13 +46,21 @@ This project focuses on real-world administrative scenarios such as:
 
 ### Windows Server Administration
 
-- Get local administrators
-- Get System Information
-- Get Events from Eventlog
-- Get installed softwares on server
-- Get encrypted volumes
-- Get program that run on startup
-- Get running processes 
+- 👤 Get local administrators
+- ℹ️ Get System Information
+- ⚡ Get Events from Eventlog
+- 🧑‍💻 Get installed softwares on server
+- 💽 Get encrypted volumes
+- ☑️ Get program that run on startup
+- 🕐 Get running processes 
+
+### Active Directory Administration
+
+- 👤 Get inactive users
+- ℹ️ Get locked accounts
+- 👥 Disable inactive users
+- 🧾 Export AD users
+- 🔑 Get password expiry
 
 ---
 
