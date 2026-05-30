@@ -55,13 +55,14 @@ This project focuses on real-world administrative scenarios such as:
 - ☑️ Get program that run on startup
 - 🕐 Get running processes 
 
-### Active Directory Administration
+### 🔐 Active Directory Administration
 
-- 👤 Get inactive users
-- ℹ️ Get locked accounts
-- 👥 Disable inactive users
-- 🧾 Export AD users
-- 🔑 Get password expiry
+- Find inactive AD users
+- Export locked AD accounts
+- Generate password expiry reports
+- Export recursive group membership
+- Export AD users inventory
+- Disable inactive accounts safely using `-WhatIf`
 
 ---
 
