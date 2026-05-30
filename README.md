@@ -156,7 +156,7 @@ powershell-admin-toolkit/
 -ExcludeExtension "txt","nfo"
 ```
 
-### Remove empty folders from $env:TEMP
+### Remove empty folders 
 
 ```
 .\scripts\file-admin\Remove-EmptyTempFolders.ps1
