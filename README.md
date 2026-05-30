@@ -92,7 +92,8 @@ powershell-admin-toolkit/
 │   │   ├── Get-RemoteDiskSpace.ps1
 │   │   ├── Get-RemoteUptime.ps1
 │   │   ├── Get-RemoteServiceStatus.ps1
-│   │   └── Restart-RemoteService.ps1
+│   │   ├── Restart-RemoteService.ps1
+|   |   └── Remove-EmptyFolders.ps1 
 │   │
 │   ├── windows-admin/
 |   |   ├── Get-InstalledSoftware.ps1
