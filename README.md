@@ -159,9 +159,9 @@ powershell-admin-toolkit/
 ### Remove empty folders 
 
 ```
-.\scripts\file-admin\Remove-EmptyTempFolders.ps1
+.\scripts\file-admin\Remove-EmptyFolders.ps1
 
-Recursively scans the current user's TEMP directory and removes orphaned empty folders left behind by installers, update processes and applications such as OneDrive, Docker Desktop, VS Code and Install4j-based software.
+Recursively scans the  directory and removes orphaned empty folders.
 
 Features:
 - Safe recursive scan
